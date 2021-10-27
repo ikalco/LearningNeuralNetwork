@@ -1,11 +1,13 @@
-LearningNeuralNetwork
+Learning how to use Neural Networks
 ===================================
 
-What It Is
-------------
-- A JavaScript app where you can create logic circuits
-- Uses the P5JS library
+Sources
+------------------
+- [Make Your Own Neural Network by Tariq Rashid](https://1lib.us/book/5226338/5db893)
 
-How To Use It
-------------
-- To try it out you can simply go to the website [ikalco.github.io/CircuitMakingGame/](https://ikalco.github.io/CircuitMakingGame/)
+Data
+-----------
+- [Training Set For Number Identification](http://www.pjreddie.com/media/files/mnist_train.csv)
+- [Testing Set For Number Identification](http://www.pjreddie.com/media/files/mnist_test.csv)
+- [Smaller Training Set For Number Identification](https://raw.githubusercontent.com/makeyourownneuralnetwork/makeyourownneuralnetwork/master/mnist_dataset/mnist_train_100.csv)
+- [Smaller Testing Set For Number Identification](https://raw.githubusercontent.com/makeyourownneuralnetwork/makeyourownneuralnetwork/master/mnist_dataset/mnist_test_10.csv)
