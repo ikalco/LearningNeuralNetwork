@@ -65,6 +65,7 @@ class NeuralNetowrk {
 
 let trainingDataLink = "./data/mnist_train_100.csv";
 let testingDataLink = "./data/mnist_test.csv";
+let loadNetworkLink = "./trained_network.txt";
 
 function setup() {
   createCanvas(600, 600);
@@ -72,35 +73,66 @@ function setup() {
   fetch(trainingDataLink)
     .then((res) => res.text())
     .then((text) => trainNetwork(text));
-
-  background("#aaaaaa");
 }
 
-function trainNetwork(text) {
-  console.time("Time to Learn: ");
+function loadNetwork(text) {
+  let a = performance.now();
   let input_nodes = 784;
-  let hidden_nodes = 100;
+  let hidden_nodes = 200;
   let output_nodes = 10;
 
-  let learning_rate = 0.75;
+  let learning_rate = 0.2;
 
   n = new NeuralNetowrk(input_nodes, hidden_nodes, output_nodes, learning_rate);
 
-  let data_list = text.split("\n");
+  let data = text.split("\n");
 
-  for (let i = 0; i < data_list.length; i++) {
-    let all_values = data_list[i].split(",");
-    if (all_values.length < 785) continue;
+  n.who = JSON.parse(data[0].split("'")[1]);
+  n.wih = JSON.parse(data[1].split("'")[1]);
 
-    let targets = new Array(10).fill(0.01);
-    targets[all_values.shift()] = 0.99;
+  let b = performance.now();
+  console.log(`Loaded network successfully in: ${b - a}ms`);
 
-    let inputs = all_values.map((_) => (parseFloat(_) / 255.0) * 0.99 + 0.01);
+  fetch(testingDataLink)
+    .then((res) => res.text())
+    .then((text) => testNetworkMulti(text));
+}
 
-    n.train(inputs, targets);
+function trainNetwork(text) {
+  console.log("Starting to Train Network");
+  let f = performance.now();
+  let input_nodes = 784;
+  let hidden_nodes = 200;
+  let output_nodes = 10;
+
+  let learning_rate = 0.2;
+  let epochs = 7;
+
+  n = new NeuralNetowrk(input_nodes, hidden_nodes, output_nodes, learning_rate);
+
+  let training_data_list = text.split("\n");
+  let test = training_data_list[0].split(",");
+  test.shift();
+
+  drawGrayscaleImgFromList(test);
+
+  for (let j = 0; j < epochs; j++) {
+    for (let i = 0; i < training_data_list.length; i++) {
+      let all_values = training_data_list[i].split(",");
+      if (all_values.length < 785) continue;
+
+      let targets = new Array(10).fill(0.01);
+      targets[all_values.shift()] = 0.99;
+
+      let inputs = all_values.map((_) => (parseFloat(_) / 255.0) * 0.99 + 0.01);
+
+      n.train(inputs, targets);
+    }
   }
 
-  console.timeEnd("Time to Learn: ");
+  let g = performance.now();
+  console.log(`Training took: ${g - f}ms`);
+  console.log("\n");
 
   fetch(testingDataLink)
     .then((res) => res.text())
@@ -108,6 +140,7 @@ function trainNetwork(text) {
 }
 
 function testNetworkMulti(text) {
+  console.log("Starting Multi-Threaded Network Test");
   let a = window.performance.now();
   let scorecard = [];
 
@@ -129,51 +162,15 @@ function testNetworkMulti(text) {
       finished_workers++;
       if (finished_workers == numOfWorkers) {
         let b = performance.now();
-        console.log(`${b - a} ms`);
-        console.log(`Performance: ${scorecard.reduce((a, b) => a + b) / scorecard.length}`);
+        console.log(`Multi-Threaded Network Test Took: ${b - a} ms`);
+        console.log(`Performance: ${(scorecard.reduce((c, d) => c + d) / scorecard.length) * 100}%`);
       }
       w.terminate();
     };
   }
 }
 
-function testNetwork(text) {
-  console.time("Time to Test: ");
-  let test_list = text.split("\n");
-
-  let scorecard = [];
-
-  for (let i = 0; i < test_list.length; i++) {
-    let all_values = test_list[i].split(",");
-    if (all_values.length < 785) continue;
-
-    let correct_label = all_values.shift();
-    console.log(`Correct Label: ${correct_label}`);
-
-    let inputs = all_values.map((_) => (parseFloat(_) / 255.0) * 0.99 + 0.01);
-
-    let results = n.query(inputs).map((_) => _[0]);
-
-    let label = results.indexOf(Math.max(...results));
-
-    if (label == correct_label) {
-      scorecard.push(1);
-    } else {
-      scorecard.push(0);
-    }
-
-    console.log(`Network's Answer: ${label}`);
-  }
-
-  console.log(`Performance: ${scorecard.reduce((a, b) => a + b) / scorecard.length}`);
-  console.timeEnd("Time to Test: ");
-
-  //for (const [key, val] of Object.entries(n)) {
-  //  console.log(key, val);
-  //}
-}
-
-function drawNumberFromList(list) {
+function drawGrayscaleImgFromList(list) {
   let size = width / 28;
 
   let imgVals = CreateMatrixFromList(list, 28, 28);

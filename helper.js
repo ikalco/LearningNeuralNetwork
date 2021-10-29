@@ -1,22 +1,101 @@
 let sigmoid = (x) => 1 / (1 + Math.exp(-x));
 
-let MatrixDotProduct = (A, B) => A.map((row, i) => B[0].map((_, j) => row.reduce((acc, _, n) => acc + A[i][n] * B[n][j], 0)));
+/*
+######################################################################
+Array.map and Array.reduce are both really slow
+Using normal for loops is way faster when manipulating lots of data.
+######################################################################
+*/
 
-let ApplyToMatrix = (A, func = (x) => x) => A.map((col, x) => col.map((_, y) => func(_, x, y)));
+//let MatrixDotProductTest = (A, B) => A.map((row, i) => B[0].map((_, j) => row.reduce((acc, _, n) => acc + A[i][n] * B[n][j], 0)));
+let MatrixDotProduct = (A, B) => {
+  let result = [];
+  for (let i = 0; i < A.length; i++) {
+    result[i] = [];
+    for (let j = 0; j < B[0].length; j++) {
+      let sum = 0;
+      for (let k = 0; k < A[0].length; k++) {
+        sum += A[i][k] * B[k][j];
+      }
+      result[i][j] = sum;
+    }
+  }
+  return result;
+};
 
-let MatrixSubtractMatrix = (A, B) => A.map((row, x) => row.map((_, y) => _ - B[x][y]));
+//let ApplyToMatrix = (A, func = (x) => x) => A.map((col, x) => col.map((_, y) => func(_, x, y)));
+let ApplyToMatrix = (Matrix, func = (x) => x) => {
+  for (var i = 0; i < Matrix.length; i++) {
+    for (var j = 0; j < Matrix[0].length; j++) {
+      Matrix[i][j] = func(Matrix[i][j], i, j);
+    }
+  }
+  return Matrix;
+};
 
-let FloatSubtractMatrix = (Float, Matrix) => Matrix.map((row) => row.map((_) => Float - _));
+//let MatrixSubtractMatrix = (A, B) => A.map((row, x) => row.map((_, y) => _ - B[x][y]));
+let MatrixSubtractMatrix = (A, B) => {
+  for (var i = 0; i < A.length; i++) {
+    for (var j = 0; j < A[0].length; j++) {
+      A[i][j] = A[i][j] - B[i][j];
+    }
+  }
+  return A;
+};
 
-let MatrixMultMatrix = (A, B) => A.map((row, x) => row.map((_, y) => _ * B[x][y]));
+//let FloatSubtractMatrix = (Float, Matrix) => Matrix.map((row) => row.map((_) => Float - _));
+let FloatSubtractMatrix = (Float, Matrix) => {
+  for (var i = 0; i < Matrix.length; i++) {
+    for (var j = 0; j < Matrix[0].length; j++) {
+      Matrix[i][j] = Float - Matrix[i][j];
+    }
+  }
+  return Matrix;
+};
 
-let MatrixMultFloat = (Matrix, Float) => Matrix.map((row) => row.map((_) => _ * Float));
+//let MatrixMultMatrix = (A, B) => A.map((row, x) => row.map((_, y) => _ * B[x][y]));
+let MatrixMultMatrix = (A, B) => {
+  for (var i = 0; i < A.length; i++) {
+    for (var j = 0; j < A[0].length; j++) {
+      A[i][j] = A[i][j] * B[i][j];
+    }
+  }
+  return A;
+};
 
-let MatrixAddMatrix = (A, B) => A.map((row, x) => row.map((_, y) => _ + B[x][y]));
+//let MatrixMultFloat = (Matrix, Float) => Matrix.map((row) => row.map((_) => _ * Float));
+let MatrixMultFloat = (Matrix, Float) => {
+  for (var i = 0; i < Matrix.length; i++) {
+    for (var j = 0; j < Matrix[0].length; j++) {
+      Matrix[i][j] = Matrix[i][j] * Float;
+    }
+  }
+  return Matrix;
+};
+
+//let MatrixAddMatrix = (A, B) => A.map((row, x) => row.map((_, y) => _ + B[x][y]));
+let MatrixAddMatrix = (A, B) => {
+  for (var i = 0; i < A.length; i++) {
+    for (var j = 0; j < A[0].length; j++) {
+      A[i][j] = A[i][j] + B[i][j];
+    }
+  }
+  return A;
+};
+
+//let TransposeMatrix = (Matrix) => new Array(Matrix[0].length).fill(0).map((col, x) => (col = new Array(Matrix.length).fill(0).map((_, y) => Matrix[y][x])));
+let TransposeMatrix = (Matrix) => {
+  let result = [];
+  for (var i = 0; i < Matrix[0].length; i++) {
+    result[i] = [];
+    for (var j = 0; j < Matrix.length; j++) {
+      result[i][j] = Matrix[j][i];
+    }
+  }
+  return result;
+};
 
 let randNormal = (mean, sd, sizeX, sizeY) => new Array(sizeX).fill(0).map((col) => new Array(sizeY).fill(0).map((_) => randomGaussian(mean, sd)));
-
-let TransposeMatrix = (Matrix) => new Array(Matrix[0].length).fill(0).map((row, y) => (row = new Array(Matrix.length).fill(0).map((_, x) => Matrix[x][y])));
 
 let CreateMatrixFromList = (values, sizeX, sizeY) =>
   values.length == sizeX * sizeY ? new Array(sizeX).fill(0).map((col, x) => new Array(sizeY).fill(0).map((_, y) => values[x + y * sizeX])) : false;
