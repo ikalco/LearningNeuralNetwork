@@ -1,7 +1,7 @@
 Learning how to use Neural Networks
 ===================================
 
-Sources
+What I Used to Make the Neural Networks
 ------------------
 - [Make Your Own Neural Network by Tariq Rashid](https://1lib.us/book/5226338/5db893)
 
