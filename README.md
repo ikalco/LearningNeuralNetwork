@@ -4,6 +4,7 @@
 
 -   [Make Your Own Neural Network by Tariq Rashid](https://1lib.us/book/5226338/5db893)
 -   [Neural Network Series by Luis Serrano](https://youtube.com/playlist?list=PLs8w1Cdi-zvavXlPXEAsWIh4Cgh83pZPO)
+-   [Neural Network Series by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 
 ## Data
 
