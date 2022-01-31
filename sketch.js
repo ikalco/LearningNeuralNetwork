@@ -44,8 +44,6 @@ class NeuralNetowrk {
         this.lr
       )
     );
-
-    console.log("done");
   }
 
   query(inputs_list) {
@@ -70,9 +68,9 @@ let loadNetworkLink = "./trained_network.txt";
 function setup() {
   createCanvas(600, 600);
 
-  fetch(trainingDataLink)
+  fetch(loadNetworkLink)
     .then((res) => res.text())
-    .then((text) => trainNetwork(text));
+    .then((text) => loadNetwork(text));
 }
 
 function loadNetwork(text) {
