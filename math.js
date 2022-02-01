@@ -7,6 +7,60 @@ Using normal for loops is way faster when manipulating lots of data.
 ######################################################################
 */
 
+let MatrixVectorProduct = (Matrix, Vector) => {
+  let result = new Array(Matrix.length);
+  for (let i = 0; i < Matrix.length; i++) {
+    let sum = 0;
+    for (let j = 0; j < Vector.length; j++) {
+      sum += Matrix[i][j] * Vector[j];
+    }
+    result[i] = sum;
+  }
+  return result;
+}
+
+let VectorAddVector = (left, right) => {
+  let result = new Array(left.length);
+  for (let i = 0; i < left.length; i++) {
+    result[i] = left[i] + right[i];
+  }
+  return result;
+}
+
+let VectorSubVector = (left, right) => {
+  let result = new Array(left.length);
+  for (let i = 0; i < left.length; i++) {
+    result[i] = left[i] - right[i];
+  }
+  return result;
+}
+
+let VectorMultVector = (left, right) => {
+  let result = new Array(left.length);
+  for (let i = 0; i < left.length; i++) {
+    result[i] = left[i] * right[i];
+  }
+  return result;
+}
+
+let VectorMultFloat = (left, right) => {
+  let result = new Array(left.length);
+  for (let i = 0; i < left.length; i++) {
+    result[i] = left[i] * right;
+  }
+  return result;
+}
+
+let ApplyToVector = (Vector, func) => {
+  let result = new Array(Vector.length);
+  for (let i = 0; i < Vector.length; i++) {
+    result[i] = func(Vector[i]);
+  }
+  return result;
+}
+
+/////////////////////////////////////////////////////////////
+
 //let MatrixDotProductTest = (A, B) => A.map((row, i) => B[0].map((_, j) => row.reduce((acc, _, n) => acc + A[i][n] * B[n][j], 0)));
 let MatrixDotProduct = (A, B) => {
   let result = [];
