@@ -41,19 +41,31 @@ class NeuralNetwork {
     return this.layerOutputs[this.layerOutputs.length - 1];
   }
 
-  train(inputs, targets) {
-    let outputs = this.feedforward(inputs);
-    let errors = VectorSubVector(targets, outputs);
-    outputs = ApplyToVector(outputs, (y) => y * (1 - y));
-    outputs = VectorMultVector(outputs, errors);
-    outputs = VectorMultFloat(outputs, this.learningRate);
-    console.log(outputs);
+  stochastic_train(inputs, targets) {
+    if (inputs.length != this.inputNodeCount || targets.length != this.outputNodeCount) throw Error("A");
 
-    let hidden = this.layerOutputs[this.layerOutputs.length - 2];
-    let weight_ho_deltas = VectorMultVector
-  }
+    // lr = learning rate
+    // E = error
+    // O = output
+    // P = prev layer output
 
-  static normalize(arr, max = Math.max(...arr)) {
-    return arr.map((_) => _ / max);
+    // Δweight = lr * E * (O * (1 - O)) • P
+
+    let output = this.feedforward(inputs);
+    let error = VectorSubVector(targets, output);
+
+    for (let i = 0; i < this.weights.length; i++) {
+      let gradient = VectorMultFloat(VectorMultVector(error, VectorMultVector(output, FloatSubVector(1, output))), this.learningRate);
+
+      let prevLayerOutput = this.layerOutputs[this.layerOutputs.length - (2 + i)];
+
+      let weightDeltas = VectorDotVector(gradient, prevLayerOutput);
+
+      this.weights[this.weights.length - (1 + i)] = MatrixAddMatrix(this.weights[this.weights.length - (1 + i)], weightDeltas);
+      this.biases[this.biases.length - (1 + i)] = VectorAddVector(this.biases[this.biases.length - (1 + i)], gradient);
+
+      output = this.layerOutputs[this.layerOutputs.length - (2 + i)];
+      error = MatrixVectorProduct(TransposeMatrix(this.weights[this.weights.length - (1 + i)]), error);
+    }
   }
 }
